@@ -1,0 +1,169 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<sys/types.h>
+#include<string.h>
+#include<sys/wait.h>
+
+int Add(int i, int end, int arr[]) {
+    int s = 0;
+    for (int j = i; j < end; j++) {
+        s = s + arr[j];
+    }
+    return s;
+}
+
+int main() {
+    int f1[2], f2[2], f3[2], f4[2], f5[2], f6[2], f7[2], f10[2], f8[2], f9[2];
+    pipe(f1);
+    pipe(f2);
+    pipe(f3);
+    pipe(f4);
+    pipe(f5);
+    pipe(f6);
+    pipe(f7);
+    pipe(f8);
+    pipe(f9);
+    pipe(f10);
+
+    int psum, ss =  0;
+    int arr[1000];
+    for (int i = 0; i < 1000; ++i) {
+        arr[i] = i + 1;
+    }
+
+    int cpid = fork();
+    if (cpid == 0) {
+        psum =  Add(0, 100, arr);
+        write(f1[1], &psum, sizeof(psum));
+        close(f1[1]);
+        exit(1);
+    } else {
+        cpid = fork();
+        if (cpid == 0) {
+            psum =  Add(100, 200, arr);
+            write(f2[1], &psum, sizeof(psum));
+            close(f2[1]);
+            exit(1);
+        } else {
+            cpid = fork();
+            if (cpid == 0) {
+                psum =  Add(200, 300, arr);
+                write(f3[1], &psum, sizeof(psum));
+                close(f3[1]);
+                exit(1);
+            } else {
+                cpid = fork();
+                if (cpid == 0) {
+                    psum =  Add(300, 400, arr);
+                    write(f4[1], &psum, sizeof(psum));
+                    close(f4[1]);
+                    exit(1);
+                } else {
+                    cpid = fork();
+                    if (cpid == 0) {
+                        psum =  Add(400, 500, arr);
+                        write(f5[1], &psum, sizeof(psum));
+                        close(f5[1]);
+                        exit(1);
+                    } else {
+                        cpid = fork();
+                        if (cpid == 0) {
+                            psum =  Add(500, 600, arr);
+                            write(f6[1], &psum, sizeof(psum));
+                            close(f6[1]);
+                            exit(1);
+                        } else {
+                            cpid = fork();
+                            if (cpid == 0) {
+                                psum =  Add(600, 700, arr);
+                                write(f7[1], &psum, sizeof(psum));
+                                close(f7[1]);
+                                exit(1);
+                            } else {
+                                cpid = fork();
+                                if (cpid == 0) {
+                                    psum =  Add(700, 800, arr);
+                                    write(f8[1], &psum, sizeof(psum));
+                                    close(f8[1]);
+                                    exit(1);
+                                } else {
+                                    cpid = fork();
+                                    if (cpid == 0) {
+                                        psum =  Add(800, 900, arr);
+                                        write(f9[1], &psum, sizeof(psum));
+                                        close(f9[1]);
+                                        exit(1);
+                                    } else {
+                                        cpid = fork();
+                                        if (cpid == 0) {
+                                            psum =  Add(900, 1000, arr);
+                                            write(f10[1], &psum, sizeof(psum));
+                                            close(f10[1]);
+                                            exit(1);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    wait(NULL);
+    wait(NULL);
+    wait(NULL);
+    wait(NULL);
+    wait(NULL);
+    wait(NULL);
+    wait(NULL);
+    wait(NULL);
+    wait(NULL);
+    wait(NULL);
+
+    int sum;
+    read(f1[0], &ss, sizeof(ss));
+    sum = sum + ss;
+    close(f1[0]);
+
+    read(f2[0], &ss, sizeof(ss));
+    sum = sum + ss;
+    close(f2[0]);
+
+    read(f3[0], &ss, sizeof(ss));
+    sum = sum + ss;
+    close(f3[0]);
+
+    read(f4[0], &ss, sizeof(ss));
+    sum = sum + ss;
+    close(f4[0]);
+
+    read(f5[0], &ss, sizeof(ss));
+    sum = sum + ss;
+    close(f5[0]);
+
+    read(f6[0], &ss, sizeof(ss));
+    sum = sum + ss;
+    close(f6[0]);
+
+    read(f7[0], &ss, sizeof(ss));
+    sum = sum + ss;
+    close(f7[0]);
+
+    read(f8[0], &ss, sizeof(ss));
+    sum = sum + ss;
+    close(f8[0]);
+
+    read(f9[0], &ss, sizeof(ss));
+    sum = sum + ss;
+    close(f9[0]);
+
+    read(f10[0], &ss, sizeof(ss));
+    sum = sum + ss;
+    close(f10[0]);
+
+    printf("Final Sum of values from all  processes: %d\n", sum);
+
+}
